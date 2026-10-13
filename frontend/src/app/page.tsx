@@ -1,7 +1,7 @@
 'use client'
 import { useState, useRef } from 'react'
 
-const API = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000'
+const API = process.env.NEXT_PUBLIC_API_URL || (process.env.NODE_ENV === 'development' ? 'http://localhost:8000' : '')
 
 const DEMO_LOGS = `2024-01-15T14:32:01Z ERROR [payment-service] Connection pool exhausted: max=50 current=50
 2024-01-15T14:32:03Z ERROR [payment-service] Timeout connecting to postgres://db-primary:5432/payments after 30s
@@ -68,6 +68,7 @@ export default function Home() {
   const esRef = useRef<EventSource | null>(null)
 
   async function runIncident() {
+    if (!API) return
     setRunning(true); setDone(false); setSteps([]); setHypotheses([]); setActions([]); setProgress(0)
     let deployList: unknown[] = []
     try { deployList = JSON.parse(deploys) } catch { deployList = [] }
@@ -169,12 +170,13 @@ export default function Home() {
                 style={{ background: '#0d1117', border: '1px solid #30363d' }} />
             </div>
 
-            <button onClick={runIncident} disabled={running}
+            <button onClick={runIncident} disabled={running || !API}
               className="w-full py-2 px-4 rounded font-semibold text-sm transition-all"
-              style={{ background: running ? '#21262d' : '#da3633', color: running ? '#8b949e' : '#fff',
-                       cursor: running ? 'not-allowed' : 'pointer' }}>
+              style={{ background: running || !API ? '#21262d' : '#da3633', color: running || !API ? '#8b949e' : '#fff',
+                       cursor: running || !API ? 'not-allowed' : 'pointer' }}>
               {running ? `Analyzing… ${Math.round(progress)}%` : '🚨 Run Incident Analysis'}
             </button>
+            {!API && <p className="text-xs text-gray-400">Incident analysis is unavailable until an API URL is configured for this deployment.</p>}
           </div>
 
           {/* Progress bar */}
