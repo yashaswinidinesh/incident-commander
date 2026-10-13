@@ -11,18 +11,9 @@ services:
     envVars:
       - key: DATABASE_URL
         fromDatabase:
-          name: incident-commander-db
+          name: research-proto-agent-db
           property: connectionString
       - key: SECRET_KEY
         generateValue: true
       - key: OPENAI_API_KEY
         sync: false
-
-databases:
-  - name: incident-commander-db
-    databaseName: incident_cmd
-    user: ic
-    postgresMajorVersion: "16"
-    plan: free
-    region: oregon
-    ipAllowList: []

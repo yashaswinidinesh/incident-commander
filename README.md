@@ -79,7 +79,7 @@ FastAPI · SQLAlchemy async · PostgreSQL · Next.js 14 · Tailwind · Docker Co
 
 Deploy the API and database on Render using the root `render.yaml` Blueprint, then set `NEXT_PUBLIC_API_URL` in the Vercel project to `https://<render-api-host>`. Redeploy the frontend after setting the variable. Without this value, the analysis button stays disabled outside local development.
 
-The Blueprint uses Render's free web-service and PostgreSQL plans; the free database expires after 30 days. The PostgreSQL database is private to Render services. Leave `OPENAI_API_KEY` unset to use mock analysis.
+The Blueprint reuses the existing `research-proto-agent-db` Render PostgreSQL instance; Incident Commander stores its data in separate tables. This avoids creating another database, but both apps share its lifecycle and 30-day free-tier expiry. Leave `OPENAI_API_KEY` unset to use mock analysis.
 
 ## Author
 
